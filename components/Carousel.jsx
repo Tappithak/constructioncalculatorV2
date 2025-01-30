@@ -1,11 +1,32 @@
-'use client';
-import React, { useState, useEffect } from "react";
+"use client";
+import * as React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Image from "next/image";
+import Box from "@mui/joy/Box";
+import Drawer from "@mui/joy/Drawer";
+import CardMenu from "./Card";
+import Input from "@mui/joy/Input";
+
+import Stack from '@mui/joy/Stack';
+import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
+import ModalDialog from '@mui/joy/ModalDialog';
+import DialogTitle from '@mui/joy/DialogTitle';
+import DialogContent from '@mui/joy/DialogContent';
 
 
-const BlogCarousel = ({setShow,setNameHead}) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const BlogCarousel = ({ data }) => {
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [state, setState] = React.useState(false);
+  const [selectGroup, setSelectGroup] = React.useState("all");
+  const [search, setSearch] = React.useState("");
+  const [max, setMax] = React.useState(25);
+  const [layout, setLayout] = React.useState(undefined);
+  const [header, setHeader] = React.useState("รายการ");
+  
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
 
   const blogPosts = [
     {
@@ -13,19 +34,21 @@ const BlogCarousel = ({setShow,setNameHead}) => {
       title: "อาคารพัก",
       category: "อาคาร",
       description: "รวมข้อมูลแบบอาคารพักประทวน นายทหาร สัญญาบัตร แพทย์ บก.",
-      image: "https://lh3.googleusercontent.com/d/1G2qgl997SkLFPJN5b6KCKhDfjpEVvQp7",
+      image:
+        "https://lh3.googleusercontent.com/d/1G2qgl997SkLFPJN5b6KCKhDfjpEVvQp7",
     },
     {
       id: 2,
       title: "บ้านพักเดี่ยว และ แฝด",
-      category: "บ้านพัก",
+      category: "บ้าน",
       description: "รวมข้อมูลแบบบ้านพักเดี่ยว และ แฝด",
-      image: "https://lh3.googleusercontent.com/d/14NnhPVBT_1vubPlcDje5RCiKXutk6RSh",
+      image:
+        "https://lh3.googleusercontent.com/d/14NnhPVBT_1vubPlcDje5RCiKXutk6RSh",
     },
     {
       id: 3,
       title: "โรงเลี้ยง โรงเก็บ โรงพละ โรงจอดรถ",
-      category: "โรงต่างๆ",
+      category: "โรง",
       description: "รวมข้อมูลแบบ โรงเลี้ยง โรงเก็บ โรงพละ โรงจอดรถ",
       image: "/head/h20.jpeg",
     },
@@ -42,10 +65,11 @@ const BlogCarousel = ({setShow,setNameHead}) => {
       category: "อื่นๆ",
       description: "Other",
       image: "/head/h22.jpeg",
-    }
+    },
   ];
 
-  const itemsPerPage = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+  const itemsPerPage =
+    window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
   const totalPages = Math.ceil(blogPosts.length / itemsPerPage);
 
   const nextSlide = () => {
@@ -60,7 +84,7 @@ const BlogCarousel = ({setShow,setNameHead}) => {
     );
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "ArrowLeft") {
         prevSlide();
@@ -87,7 +111,9 @@ const BlogCarousel = ({setShow,setNameHead}) => {
               key={post.id}
               className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
               role="article"
-              onClick={() => {setShow(true),setNameHead(post.category)}}
+              onClick={() => {
+                setState(true), setSelectGroup(post.category);
+              }}
             >
               <div className="relative h-48 overflow-hidden">
                 <img
@@ -106,6 +132,9 @@ const BlogCarousel = ({setShow,setNameHead}) => {
                 <p className="text-gray-600 text-sm leading-relaxed">
                   {post.description}
                 </p>
+                <span className="relative bottom-0 mb-2 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                {`${data.filter(item => item.group == post.category).length} / ${max}`}
+                </span>
               </div>
             </div>
           ))}
@@ -140,6 +169,42 @@ const BlogCarousel = ({setShow,setNameHead}) => {
           ))}
         </div>
       </div>
+      <Drawer
+        key={"bottom"}
+        anchor={"bottom"}
+        open={state}
+        onClose={() => {
+          setState(false);
+        }}
+      >
+        <Box className="p-8">
+          <Input size="lg" placeholder="ค้นหารายการ..." 
+          onChange={handleSearch} value={search}
+          />
+        </Box>
+        <Box className="p-[8px] justify-items-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-auto h-[100%]">
+          {data
+            .filter((item) => item.group.includes(selectGroup) && item.name.includes(search))
+            .map((item, index) => {
+              return (
+                <CardMenu key={index} title={item.name} group={selectGroup} setLayout={setLayout} setHeader={setHeader}/>
+              );
+            })}
+        </Box>
+      </Drawer>
+
+      <Modal open={!!layout} onClose={() => setLayout(undefined)}>
+        <ModalDialog layout={layout}>
+          <ModalClose />
+          <DialogTitle>{header}</DialogTitle>
+          <DialogContent>
+            <div>
+              This is a <code>{layout}</code> modal dialog. Press <code>esc</code> to
+              close it.
+            </div>
+          </DialogContent>
+        </ModalDialog>
+      </Modal>
     </div>
   );
 };

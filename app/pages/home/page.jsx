@@ -1,39 +1,17 @@
 "use client";
-import grab from "../../../public/icon/grab.png"; // Fixed path
-import home from "../../../public/icon/home-.png";
-import other from "../../../public/icon/other-100.png";
-import Building from "../../../public/icon/building.png";
-import roung from "../../../public/icon/roung-.png";
 // import Data from "../assets/data.json";
 import * as React from "react";
-import Icon from "../../../public/icon/krom.png";
-import Detail from "../../../components/Detail";
 import axios from "axios";
-import { PieChart } from "@mui/x-charts/PieChart";
-import { useDrawingArea } from "@mui/x-charts/hooks";
-import { styled } from "@mui/material/styles";
 import Carousel from "../../../components/Carousel";
 import Image from "next/image";
 import { Box } from "@mui/material";
 import Nav from "../../../components/layout/Nav";
-import DrawerList from "../../../components/Drower";
+import CardChart from "../../../components/CardChart";
+
 
 export default function homePage() {
-  const [search, setSearch] = React.useState("");
-  const [showMD, setshowMD] = React.useState(false);
-  const [valId, setValid] = React.useState("");
-  const [selBu, setselBu] = React.useState(" card-active");
-  const [selhome, setselhome] = React.useState("");
-  const [selother, setselother] = React.useState("");
-  const [selroung, setselroung] = React.useState("");
-  const [selgrab, setselgrab] = React.useState("");
-  const [Data, setData] = React.useState([]);
-  const [typeSel, setTypeSel] = React.useState("อาคาร");
-  const [count, setCount] = React.useState([]);
-  const [iconcard, seticoncard] = React.useState();
-  const [numCount, setnumCount] = React.useState(0);
-  const [show, setShow] = React.useState(false);
-  const [nameHead, setNameHead] = React.useState("");
+  const [data, setData] = React.useState([]);
+
 
   const fetchData = async () => {
     try {
@@ -41,6 +19,7 @@ export default function homePage() {
       const res = await axios.get(
         "https://script.google.com/macros/s/AKfycbwdE_O8vwGvY6UlOxSKukBgoPOgPwrDs5zYWyiyxT8XKvzju9ui9paonXKxpK4Ve955/exec?action=gethubData&username=adminDB&password=Ad1234n"
       );
+      console.log(res.data);
       setData(res.data);
       countType(res.data);
     } catch (error) {
@@ -55,113 +34,7 @@ export default function homePage() {
     fetchData();
   }, []);
 
-  function callDetail(id) {
-    // navigate("/modal", { replace: true })
-    setValid(id);
-    setshowMD(true);
-    // document.getElementById("my_modal_3").showModal();
-  }
-
-  function closeModal() {
-    setshowMD(false);
-  }
-
-  function select_slide(sel) {
-    switch (sel) {
-      case "bu":
-        setselBu(" card-active");
-        setselhome("");
-        setselgrab("");
-        setselother("");
-        setselroung("");
-        setTypeSel("อาคาร");
-        seticoncard(Building);
-        setnumCount(count[2]);
-        break;
-      case "home":
-        setselhome(" card-active");
-        setselBu("");
-        setselgrab("");
-        setselother("");
-        setselroung("");
-        setTypeSel("บ้าน");
-        seticoncard(home);
-        setnumCount(count[0]);
-        break;
-      case "grab":
-        setselgrab(" card-active");
-        setselBu("");
-        setselhome("");
-        setselother("");
-        setselroung("");
-        setTypeSel("กราบ");
-        seticoncard(grab);
-        setnumCount(count[1]);
-        break;
-      case "other":
-        setselother(" card-active");
-        setselBu("");
-        setselhome("");
-        setselroung("");
-        setselgrab("");
-        setTypeSel("อื่นๆ");
-        seticoncard(other);
-        setnumCount(count[4]);
-        break;
-      case "roung":
-        setselroung(" card-active");
-        setselBu("");
-        setselhome("");
-        setselgrab("");
-        setselother("");
-        setTypeSel("โรง");
-        seticoncard(roung);
-        setnumCount(count[3]);
-        break;
-    }
-  }
-
-  const data = [
-    { value: numCount, label: "Actual", color: "#FF6500" },
-    { value: 25 - numCount, label: "Remain", color: "#ff65004a" },
-  ];
-
-  const size = {
-    width: 600,
-    height: 400,
-  };
-
-  const StyledText = styled("text")(({ theme }) => ({
-    fill: theme.palette.text.primary,
-    textAnchor: "middle",
-    dominantBaseline: "central",
-    fontSize: 52,
-  }));
-
-  function PieCenterLabel({ children }) {
-    const { width, height, left, top } = useDrawingArea();
-    return (
-      <StyledText x={left + width / 2} y={top + height / 2}>
-        {children}
-      </StyledText>
-    );
-  }
-
-  function countType(arr) {
-    let num_home = arr.filter((item) => item.group == "บ้าน");
-    let num_grab = arr.filter((item) => item.group == "กราบ");
-    let num_build = arr.filter((item) => item.group == "อาคาร");
-    let num_roung = arr.filter((item) => item.group == "โรง");
-    let num_other = arr.filter((item) => item.group == "อื่นๆ");
-    setnumCount(num_build.length);
-    setCount([
-      num_home.length,
-      num_grab.length,
-      num_build.length,
-      num_roung.length,
-      num_other.length,
-    ]);
-  }
+  
 
   return (
     <Box
@@ -192,16 +65,10 @@ export default function homePage() {
         }}
       >
         <Nav />
-        <Carousel setShow={setShow} setNameHead={setNameHead} />
-        {show == "100%" ? (
-          <Accordition show={show} nameHead={nameHead} />
-        ) : (
-          <div></div>
-        )}
-        {
-        show &&
-        <DrawerList setShow={setShow}/>
-        }
+        <Box className="w-full flex justify-center">
+        <CardChart actual={data.length}/>
+        </Box>
+        <Carousel data={data}/>
       </Box>
 
       <Box

@@ -1,55 +1,37 @@
 import * as React from 'react';
 import AspectRatio from '@mui/joy/AspectRatio';
-import Link from '@mui/joy/Link';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
-import Chip from '@mui/joy/Chip';
 import Typography from '@mui/joy/Typography';
+import Image from 'next/image';
 
-export default function InteractiveCard() {
+
+
+export default function InteractiveCard({title,group,setLayout,setHeader}) {
   return (
     <Card
       variant="outlined"
       orientation="horizontal"
       sx={{
         width: 320,
+        height: 120,
         '&:hover': { boxShadow: 'md', borderColor: 'neutral.outlinedHoverBorder' },
       }}
+      onClick={() => {setLayout('fullscreen'),setHeader(title)}}
     >
       <AspectRatio ratio="1" sx={{ width: 90 }}>
-        <img
-          src="https://images.unsplash.com/photo-1507833423370-a126b89d394b?auto=format&fit=crop&w=90"
-          srcSet="https://images.unsplash.com/photo-1507833423370-a126b89d394b?auto=format&fit=crop&w=90&dpr=2 2x"
-          loading="lazy"
-          alt=""
-        />
+        <Image src={
+          group == "อาคาร" ? "/icon/building.png" :
+          group == "บ้าน" ? "/icon/home-.png" :
+          group == "โรง" ? "/icon/roung-.png" :
+          group == "กราบ" ? "/icon/grab.png" : "/icon/other-100.png"
+
+        } alt='image'  objectFit="cover" width={90} height={90}/>
       </AspectRatio>
       <CardContent>
         <Typography level="title-lg" id="card-description">
-          Yosemite Park
+         {title}
         </Typography>
-        <Typography
-          level="body-sm"
-          aria-describedby="card-description"
-          sx={{ mb: 1 }}
-        >
-          <Link
-            overlay
-            underline="none"
-            href="#interactive-card"
-            sx={{ color: 'text.tertiary' }}
-          >
-            California, USA
-          </Link>
-        </Typography>
-        <Chip
-          variant="outlined"
-          color="primary"
-          size="sm"
-          sx={{ pointerEvents: 'none' }}
-        >
-          Cool weather all day long
-        </Chip>
       </CardContent>
     </Card>
   );
