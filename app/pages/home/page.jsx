@@ -53,7 +53,7 @@ export default function Homepage() {
       <Box
         sx={{
           width: "100%",
-          height: "100%",
+          height: "100vh",
           position: "absolute",
           zIndex: "2",
           backgroundColor: "rgba(0,0,0,0.5)",
@@ -74,7 +74,7 @@ export default function Homepage() {
       <Box
         sx={{
           width: "100%",
-          height: "100%",
+          height: "100vh",
           backgroundColor: "rgba(0,0,0,0.8)",
           position: "absolute",
           zIndex: "1",
