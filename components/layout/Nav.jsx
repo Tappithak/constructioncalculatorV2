@@ -94,7 +94,7 @@ export default function Nav() {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content rounded-box z-[1] mt-3 w-52 p-2 shadow text-slate-950 bg-white"
+            className="menu menu-sm dropdown-content rounded-box z-[10] mt-3 w-52 p-2 shadow text-slate-950 bg-white"
           >
             {/* <li>
               <a className="justify-between">
