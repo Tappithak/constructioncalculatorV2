@@ -23,9 +23,9 @@ export default function Home() {
          console.log(error);
       }
     }
-    validateToken();
-
-
+    if (typeof window !== "undefined") {
+      validateToken();
+    }
   }, [])
 
 

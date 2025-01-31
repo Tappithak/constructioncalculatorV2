@@ -1,13 +1,11 @@
 "use client";
 import * as React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import Image from "next/image";
 import Box from "@mui/joy/Box";
 import Drawer from "@mui/joy/Drawer";
 import CardMenu from "./Card";
 import Input from "@mui/joy/Input";
 
-import Stack from '@mui/joy/Stack';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
 import ModalDialog from '@mui/joy/ModalDialog';
@@ -24,6 +22,7 @@ const BlogCarousel = ({ data }) => {
   const [max, setMax] = React.useState(25);
   const [layout, setLayout] = React.useState(undefined);
   const [header, setHeader] = React.useState("รายการ");
+  const [itemsPerPage, setItemsPerPage] = React.useState(1);
   
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -69,8 +68,14 @@ const BlogCarousel = ({ data }) => {
     },
   ];
 
-  const itemsPerPage =
-    window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const itemsPerPage =
+        window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+      setItemsPerPage(itemsPerPage);
+    }
+  }, []);
+
   const totalPages = Math.ceil(blogPosts.length / itemsPerPage);
 
   const nextSlide = () => {

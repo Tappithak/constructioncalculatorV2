@@ -1,6 +1,5 @@
 // import data from "../assets/data.json";
 import * as React from "react";
-import axios from "axios";
 import Image from "next/image";
 import "../app/style/style.css";
 
