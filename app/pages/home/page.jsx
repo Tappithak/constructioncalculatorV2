@@ -19,9 +19,7 @@ export default function homePage() {
       const res = await axios.get(
         "https://script.google.com/macros/s/AKfycbwdE_O8vwGvY6UlOxSKukBgoPOgPwrDs5zYWyiyxT8XKvzju9ui9paonXKxpK4Ve955/exec?action=gethubData&username=adminDB&password=Ad1234n"
       );
-      console.log(res.data);
       setData(res.data);
-      countType(res.data);
     } catch (error) {
       // setload(false);
       console.log(error);

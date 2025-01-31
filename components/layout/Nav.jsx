@@ -1,52 +1,115 @@
-import React from "react";
+import * as React from "react";
 import Image from "next/image";
+import axios from "axios";
+import Swal from "sweetalert2";
+
 
 export default function Nav() {
+  const [user, setuser] = React.useState("");
+  const [fullname, setfullname] = React.useState("");
+  const logoutconfirm = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to log out?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.post("/api/logout", {
+          withCredentials: true, // ส่ง Cookies ไปด้วย
+        });
+
+        axios.post("/api/removedevice", {username:localStorage.getItem("nameuser")}).then((res) => {
+          if (res.status === 200) {
+            window.location.href = "/auth/login";
+            Swal.fire({
+              title: "Logout success!",
+              icon: "success",
+            });
+          }
+        });
+      } catch (err) {
+        window.location.href = "/auth/login";
+      }
+    }
+  };
+
+  React.useEffect(() => {
+
+    const validateToken = async () => {
+      try {
+        const response = await axios.get("/api/validate-token", {
+          withCredentials: true,
+        });
+        if (response.data.valid) {
+          // ถ้า Token ถูกต้อง อัพเดท User
+          setfullname(response.data.user);
+          setuser(response.data.user.split("")[0]);
+        }
+      } catch (error) {
+        // ถ้า Token ไม่ถูกต้อง ให้ลบ Token ออกจาก Cookies
+        console.log(error);
+        axios.post("/api/removedevice", {username:localStorage.getItem("nameuser")}).then((res) => {
+          if (res.status === 200) {
+            window.location.href = "/auth/login";
+          }
+        });
+        
+      }
+    };
+    
+    validateToken();
+  }, []);
+
+
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
-      <Image src="/logo/android-chrome-512x512.png" width={50} height={50}  alt="logo"/>
+        <Image
+          src="/logo/icon.png"
+          className="w-[45px] h-[45px]"
+          alt="logo"
+          width={80}
+          height={80}
+        />
       </div>
       <div className="navbar-center">
         <a className="btn btn-ghost text-xl">Construction Calculator</a>
       </div>
       <div className="navbar-end">
-        
-        {/* <button className="btn btn-ghost btn-circle">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        <div className="dropdown dropdown-end">
+          <div
+            tabIndex={0}
+            role="button"
+            className="btn btn-ghost btn-circle avatar"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </button>
-        <button className="btn btn-ghost btn-circle">
-          <div className="indicator">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-              />
-            </svg>
-            <span className="badge badge-xs badge-primary indicator-item"></span>
+            <div className="w-10 rounded-full">
+              <span className="text-3xl">{user}</span>
+            </div>
           </div>
-        </button> */}
+          <ul
+            tabIndex={0}
+            className="menu menu-sm dropdown-content rounded-box z-[1] mt-3 w-52 p-2 shadow text-slate-950 bg-white"
+          >
+            {/* <li>
+              <a className="justify-between">
+                Profile
+                <span className="badge">New</span>
+              </a>
+            </li>
+            <li>
+              <a>Settings</a>
+            </li> */}
+            <li onClick={() => logoutconfirm()}>
+              <a>Logout</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );

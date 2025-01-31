@@ -26,7 +26,7 @@ export default function InteractiveCard({title,group,setLayout,setHeader}) {
           group == "โรง" ? "/icon/roung-.png" :
           group == "กราบ" ? "/icon/grab.png" : "/icon/other-100.png"
 
-        } alt='image'  objectFit="cover" width={90} height={90}/>
+        } alt='image'  className='object-cover w-[90px] h-[90px]' width={90} height={90}/>
       </AspectRatio>
       <CardContent>
         <Typography level="title-lg" id="card-description">

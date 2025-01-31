@@ -13,6 +13,7 @@ import ModalClose from '@mui/joy/ModalClose';
 import ModalDialog from '@mui/joy/ModalDialog';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
+import Detail from "./Detail"
 
 
 const BlogCarousel = ({ data }) => {
@@ -198,10 +199,7 @@ const BlogCarousel = ({ data }) => {
           <ModalClose />
           <DialogTitle>{header}</DialogTitle>
           <DialogContent>
-            <div>
-              This is a <code>{layout}</code> modal dialog. Press <code>esc</code> to
-              close it.
-            </div>
+            <Detail data={data} select={header}/>
           </DialogContent>
         </ModalDialog>
       </Modal>
