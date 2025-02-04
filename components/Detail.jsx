@@ -2,26 +2,46 @@
 import * as React from "react";
 import Image from "next/image";
 import "../app/style/style.css";
+import axios from "axios";
 
-export default function Detailpage({data,select}) {
+
+export default function Detailpage({ data, select }) {
   const [resData, setresData] = React.useState([]);
   const [imgArr, setimgArr] = React.useState([]);
 
+  const downloadFile = async (fileUrl) => {
+    fetch("/api/download", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ fileUrl }), // Send the file URL to the backend
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileUrl.split("/").pop(); // Extract filename from URL
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      })
+      .catch((error) => console.error("Download error:", error));
+  };
 
-React.useEffect(() => {
+
+  React.useEffect(() => {
     // console.log(data.filter((item) => item.name === select));
-    setresData(
-    data.filter((item) => item.name === select)[0]
-   )
-   setimgArr(
-    data.filter((item) => item.name === select)[0].image
-   )
+    setresData(data.filter((item) => item.name === select)[0]);
+    setimgArr(data.filter((item) => item.name === select)[0].image);
   }, []);
 
   return (
     <>
-      {
-        resData == "" ? <div></div> :
+      {resData == "" ? (
+        <div></div>
+      ) : (
         <div className="contents-detail">
           <div className="icon-head">
             <Image
@@ -37,10 +57,10 @@ React.useEffect(() => {
             {resData.head != "" ? (
               <a href={resData.head} target="_blank">
                 <img
-                className="imgdetail"
-                src={resData.head}
-                alt={resData.id}
-              ></img>
+                  className="imgdetail"
+                  src={resData.head}
+                  alt={resData.id}
+                ></img>
               </a>
             ) : (
               <div></div>
@@ -113,17 +133,17 @@ React.useEffect(() => {
             )}
             <div className="groupFile">
               {resData.url_pdf != "" ? (
-                <a 
-                onClick={() => window.open(resData.url_pdf, "_blank")}
-                key={resData.url_pdf}
+                <a
+                  onClick={() => window.open(resData.url_pdf, "_blank")}
+                  key={resData.url_pdf}
                 >
                   <Image
-                  className="iconfile hover:cursor-pointer"
-                  src="/icon/pdf.png"
-                  alt={resData.url_pdf}
-                  width={80}
-                  height={80}
-                />
+                    className="iconfile hover:cursor-pointer"
+                    src="/icon/pdf.png"
+                    alt={resData.url_pdf}
+                    width={80}
+                    height={80}
+                  />
                 </a>
               ) : (
                 <p></p>
@@ -131,16 +151,16 @@ React.useEffect(() => {
 
               {resData.url_xlsx != "" ? (
                 <a
-                 onClick={() => window.open(resData.url_xlsx, "_blank")}
+                  onClick={() => downloadFile(resData.url_xlsx)}
                   key={resData.url_xlsx}
                 >
                   <Image
-                  className="iconfile hover:cursor-pointer"
-                  src="/icon/excel.png"
-                  alt={resData.url_xlsx}
-                  width={80}
-                  height={80}
-                />
+                    className="iconfile hover:cursor-pointer"
+                    src="/icon/excel.png"
+                    alt={resData.url_xlsx}
+                    width={80}
+                    height={80}
+                  />
                 </a>
               ) : (
                 <p></p>
@@ -148,16 +168,16 @@ React.useEffect(() => {
 
               {resData.url_docx != "" ? (
                 <a
-                  onClick={() => window.open(resData.url_docx, "_blank")}
+                onClick={() => downloadFile(resData.url_docx)}
                   key={resData.url_docx}
                 >
                   <Image
-                  className="iconfile hover:cursor-pointer"
-                  src="/icon/word.png"
-                  alt={resData.url_docx}
-                  width={80}
-                  height={80}
-                />
+                    className="iconfile hover:cursor-pointer"
+                    src="/icon/word.png"
+                    alt={resData.url_docx}
+                    width={80}
+                    height={80}
+                  />
                 </a>
               ) : (
                 <p></p>
@@ -169,13 +189,17 @@ React.useEffect(() => {
             {imgArr.map((item, index) => {
               return (
                 <a href={item.toString()} target="_blank" key={index}>
-                  <img className="imgdetail" src={item} alt={"รูปภาพเสียหาย"}></img>
+                  <img
+                    className="imgdetail"
+                    src={item}
+                    alt={"คลิกเปิดไฟล์"}
+                  ></img>
                 </a>
               );
             })}
           </div>
         </div>
-      }
+      )}
     </>
   );
 }
