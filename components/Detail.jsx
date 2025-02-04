@@ -113,9 +113,12 @@ React.useEffect(() => {
             )}
             <div className="groupFile">
               {resData.url_pdf != "" ? (
-                <a href={resData.url_pdf} target="_blank" key={resData.url_pdf}>
+                <a 
+                onClick={() => window.open(resData.url_pdf, "_blank")}
+                key={resData.url_pdf}
+                >
                   <Image
-                  className="iconfile"
+                  className="iconfile hover:cursor-pointer"
                   src="/icon/pdf.png"
                   alt={resData.url_pdf}
                   width={80}
@@ -128,12 +131,11 @@ React.useEffect(() => {
 
               {resData.url_xlsx != "" ? (
                 <a
-                  href={resData.url_xlsx}
-                  target="_blank"
+                 onClick={() => window.open(resData.url_xlsx, "_blank")}
                   key={resData.url_xlsx}
                 >
                   <Image
-                  className="iconfile"
+                  className="iconfile hover:cursor-pointer"
                   src="/icon/excel.png"
                   alt={resData.url_xlsx}
                   width={80}
@@ -146,12 +148,11 @@ React.useEffect(() => {
 
               {resData.url_docx != "" ? (
                 <a
-                  href={resData.url_docx}
-                  target="_blank"
+                  onClick={() => window.open(resData.url_docx, "_blank")}
                   key={resData.url_docx}
                 >
                   <Image
-                  className="iconfile"
+                  className="iconfile hover:cursor-pointer"
                   src="/icon/word.png"
                   alt={resData.url_docx}
                   width={80}
